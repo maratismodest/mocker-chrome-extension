@@ -13,7 +13,7 @@
 <script>
     const button = document.querySelector('button');
     button.addEventListener('click', () => {
-        fetch('https://somedomain.com/api/qwerty')
+        fetch('https://somedomain.com/api/users')
             .then(response => response.json())
             .then(data => console.log(data));
     });
