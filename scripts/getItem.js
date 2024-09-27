@@ -7,7 +7,7 @@ export function getItem() {
                 alert('Error getting item: ' + chrome.runtime.lastError.message);
             } else {
                 const value = result[key];
-                document.getElementById('value').value = value || '';
+                document.getElementById('value').value = JSON.stringify(value) || '';
                 alert(value ? `Value: ${value}` : 'Key not found');
             }
         });
