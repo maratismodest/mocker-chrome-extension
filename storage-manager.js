@@ -24,7 +24,7 @@ function setItem() {
     const key = document.getElementById('key').value;
     const value = document.getElementById('value').value;
     if (key && value) {
-        chrome.storage.local.set({[key]: JSON.stringify(JSON.parse(value))}, function () {
+        chrome.storage.local.set({[key]: JSON.parse(value)}, function () {
             if (chrome.runtime.lastError) {
                 console.error(chrome.runtime.lastError);
                 alert('Error setting item: ' + chrome.runtime.lastError.message);
@@ -93,6 +93,7 @@ function updateStorageContents() {
             console.error(chrome.runtime.lastError);
             document.getElementById('storage-contents').textContent = 'Error fetching storage contents';
         } else {
+            console.warn('items', items)
             document.getElementById('storage-contents').textContent = JSON.stringify(items, null, 2);
         }
     });

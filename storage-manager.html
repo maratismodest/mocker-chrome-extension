@@ -4,49 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Extension Storage Manager</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            width: 400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .input-group {
-            margin-bottom: 10px;
-        }
-
-        label {
-            display: inline-block;
-            width: 80px;
-        }
-
-        input[type="text"] {
-            width: 200px;
-        }
-
-        #storage-contents {
-            margin-top: 20px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            white-space: pre-wrap;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-    </style>
+    <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
 <h1>Extension Storage Manager</h1>
 
-<div class="input-group">
-    <label for="key">Key:</label>
-    <input type="text" id="key" placeholder="Enter key">
-</div>
+<ul>
+    <li class="input-group">
+        <label for="key">Key:</label>
+        <input type="text" id="key" placeholder="Enter key">
+    </li>
 
-<div class="input-group">
-    <label for="value">Value:</label>
-    <input type="text" id="value" placeholder="Enter value">
-</div>
+    <li class="input-group">
+        <label for="value">Value:</label>
+        <input type="text" id="value" placeholder="Enter value">
+    </li>
+</ul>
+
 
 <button id="setItem">Set Item</button>
 <button id="getItem">Get Item</button>
