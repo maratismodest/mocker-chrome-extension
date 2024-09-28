@@ -37,3 +37,26 @@ li {
     margin: 0;
     padding: 0;
 }
+
+button {
+    display: inline-block;
+    padding: 8px 16px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    color: #fff;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 8px
+}
+
+button:hover {
+    background-color: #3e8e41
+}
+
+button:active {
+    background-color: #3e8e41;
+    box-shadow: 0 4px #666;
+    transform: translateY(2px);
+}
