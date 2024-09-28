@@ -1,4 +1,4 @@
-import {updateStorageContents} from "./scripts/updateStorageContents.js";
+import {updateStorageContents} from "./scripts/updateStorageContents";
 import {getItem} from "./scripts/getItem.js";
 import {setItem} from "./scripts/setItem.js";
 import {removeItem} from "./scripts/removeItem.js";
@@ -9,10 +9,8 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('getItem').addEventListener('click', getItem);
     document.getElementById('removeItem').addEventListener('click', removeItem);
     document.getElementById('clearAll').addEventListener('click', clearAll);
-
     // Initial update of storage contents
     updateStorageContents();
-
 
 });
 
