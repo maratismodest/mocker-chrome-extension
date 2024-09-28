@@ -5,10 +5,10 @@
   "description": "Returns mock data for specific routes",
   "permissions": [
     "declarativeNetRequest",
-    "storage"
+    "storage",
+    "activeTab"
   ],
   "host_permissions": [
-    "<all_urls>"
   ],
   "background": {
     "service_worker": "background.js"
