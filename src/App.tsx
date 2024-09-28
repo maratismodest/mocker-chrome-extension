@@ -1,16 +1,19 @@
 import {useEffect, useState} from "react";
+import {useAtom} from 'jotai';
 import {updateStorageContents} from './scripts/updateStorageContents'
 import {setItem} from "./scripts/setItem";
 import {getItem} from "./scripts/getItem";
 import {removeItem} from "./scripts/removeItem";
 import {clearAll} from "./scripts/clearAll";
+import {atomState} from "./store";
 
 function App() {
     const [key, setKey] = useState('');
     const [value, setValue] = useState('');
+    const [state, setState] = useAtom(atomState);
     useEffect(() => {
         if (chrome?.storage?.local) {
-            updateStorageContents()
+            updateStorageContents(setState)
         }
     }, [chrome?.storage?.local]);
 
@@ -36,14 +39,21 @@ function App() {
                 </li>
             </ul>
             <div className='buttons'>
-                <button onClick={setItem}>Set Item</button>
+                <button onClick={() => setItem(key, value, setState)}>Set Item</button>
                 <button onClick={() => getItem(key, setValue)}>Get Item</button>
-                <button onClick={removeItem}>Remove Item</button>
-                <button onClick={clearAll}>Clear All</button>
+                <button onClick={() => {
+                    removeItem(key, () => {
+                        setKey('')
+                        setValue('')
+                    }, setState)
+                }}>Remove Item
+                </button>
+                <button onClick={() => clearAll(setState)}>Clear All</button>
             </div>
 
             <h2>Endpoints:</h2>
-            <div id="enpoints"></div>
+            <div id="enpoints">{JSON.stringify(state, null, 2)}</div>
+            <div id="error" style={{color: 'red'}}></div>
         </>
     )
 }

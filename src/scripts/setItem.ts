@@ -1,16 +1,15 @@
 import {updateStorageContents} from "./updateStorageContents";
+import {StoreType} from "../types";
 
-export const setItem = () => {
+export const setItem = (key: string, value: string, setState: (store: StoreType) => void) => {
 
-    const key = document.getElementById('key') as HTMLInputElement
-    const value = document.getElementById('value') as HTMLTextAreaElement
-    if (key.value && value.value) {
-        chrome.storage.local.set({[key.value]: JSON.parse(value.value)}, function () {
+    if (key && value) {
+        chrome.storage.local.set({[key]: JSON.parse(value)}, function () {
             if (chrome.runtime.lastError) {
                 console.error(chrome.runtime.lastError);
                 alert('Error setting item: ' + chrome.runtime.lastError.message);
             } else {
-                updateStorageContents();
+                updateStorageContents(setState);
                 alert('Item set successfully!');
             }
         });
