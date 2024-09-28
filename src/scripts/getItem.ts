@@ -8,7 +8,7 @@ export const getItem = () => {
                 alert('Error getting item: ' + chrome.runtime.lastError.message);
             } else {
                 const value = result[key];
-                const valueInput = document.getElementById('value') as HTMLInputElement
+                const valueInput = document.getElementById('value') as HTMLTextAreaElement
                 valueInput.value = JSON.stringify(value) || '';
                 alert(value ? `Value: ${JSON.stringify(value)}` : 'Key not found');
             }
