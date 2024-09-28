@@ -8,7 +8,7 @@ export function getItem() {
             } else {
                 const value = result[key];
                 document.getElementById('value').value = JSON.stringify(value) || '';
-                alert(value ? `Value: ${value}` : 'Key not found');
+                alert(value ? `Value: ${JSON.stringify(value)}` : 'Key not found');
             }
         });
     } else {
