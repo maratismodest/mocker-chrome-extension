@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {updateStorageContents} from './scripts/updateStorageContents'
 import {setItem} from "./scripts/setItem";
 import {getItem} from "./scripts/getItem";
@@ -6,17 +6,12 @@ import {removeItem} from "./scripts/removeItem";
 import {clearAll} from "./scripts/clearAll";
 
 function App() {
-    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        setMounted(true);
-    }, []);
-
-    useEffect(() => {
-        if (mounted) {
-            updateStorageContents();
+        if (chrome?.storage?.local) {
+            updateStorageContents()
         }
-    }, [mounted]);
+    }, [chrome?.storage?.local]);
 
     return (
         <>
@@ -33,10 +28,12 @@ function App() {
                     <textarea id="value" placeholder="Enter json response" rows={5}/>
                 </li>
             </ul>
-            <button onClick={setItem}>Set Item</button>
-            <button onClick={getItem}>Get Item</button>
-            <button onClick={removeItem}>Remove Item</button>
-            <button onClick={clearAll}>Clear All</button>
+            <div className='buttons'>
+                <button onClick={setItem}>Set Item</button>
+                <button onClick={getItem}>Get Item</button>
+                <button onClick={removeItem}>Remove Item</button>
+                <button onClick={clearAll}>Clear All</button>
+            </div>
 
             <h2>Endpoints:</h2>
             <div id="enpoints"></div>

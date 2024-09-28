@@ -1,4 +1,5 @@
 export const updateStorageContents = () => {
+
     chrome.storage.local.get(null, function (items) {
         if (chrome.runtime.lastError) {
             console.error(chrome.runtime.lastError);
