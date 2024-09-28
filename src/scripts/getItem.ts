@@ -1,6 +1,4 @@
-export const getItem = () => {
-    const keyInput = document.getElementById('key') as HTMLInputElement
-    const key = keyInput.value;
+export const getItem = (key: string, setValue: (value: string) => void) => {
     if (key) {
         chrome.storage.local.get(key, function (result) {
             if (chrome.runtime.lastError) {
@@ -8,8 +6,7 @@ export const getItem = () => {
                 alert('Error getting item: ' + chrome.runtime.lastError.message);
             } else {
                 const value = result[key];
-                const valueInput = document.getElementById('value') as HTMLTextAreaElement
-                valueInput.value = JSON.stringify(value) || '';
+                setValue(JSON.stringify(value) || '')
                 alert(value ? `Value: ${JSON.stringify(value)}` : 'Key not found');
             }
         });
