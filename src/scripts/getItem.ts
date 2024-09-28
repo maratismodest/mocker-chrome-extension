@@ -1,7 +1,6 @@
 export const getItem = () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    const key = document.getElementById('key').value;
+    const keyInput = document.getElementById('key') as HTMLInputElement
+    const key = keyInput.value;
     if (key) {
         chrome.storage.local.get(key, function (result) {
             if (chrome.runtime.lastError) {
@@ -9,9 +8,8 @@ export const getItem = () => {
                 alert('Error getting item: ' + chrome.runtime.lastError.message);
             } else {
                 const value = result[key];
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-expect-error
-                document.getElementById('value').value = JSON.stringify(value) || '';
+                const valueInput = document.getElementById('value') as HTMLInputElement
+                valueInput.value = JSON.stringify(value) || '';
                 alert(value ? `Value: ${JSON.stringify(value)}` : 'Key not found');
             }
         });

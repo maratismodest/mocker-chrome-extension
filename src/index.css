@@ -16,7 +16,7 @@ label {
 }
 
 input[type="text"] {
-    width: 200px;
+    width: 100%;
     padding: 2px 4px;
 }
 
@@ -65,7 +65,7 @@ button:active {
 
 textarea {
     margin: 0;
-    width: 208px;
+    width: 100%;
     resize: none;
     padding: 2px 4px;
 }
