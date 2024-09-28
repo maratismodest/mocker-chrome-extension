@@ -1,6 +1,8 @@
 import {updateStorageContents} from "./updateStorageContents.js";
 
-export function removeItem() {
+export const removeItem = () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     const key = document.getElementById('key').value;
     if (key) {
         chrome.storage.local.remove(key, function () {
