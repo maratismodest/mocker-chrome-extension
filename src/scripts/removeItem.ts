@@ -1,9 +1,7 @@
-import {updateStorageContents} from "./updateStorageContents.js";
+import {updateStorageContents} from "./updateStorageContents";
 
 export const removeItem = () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    const key = document.getElementById('key').value;
+    const key = (document.getElementById('key') as HTMLInputElement).value;
     if (key) {
         chrome.storage.local.remove(key, function () {
             if (chrome.runtime.lastError) {
