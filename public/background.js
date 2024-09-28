@@ -10,14 +10,8 @@ const mockData = {
     ]
 };
 
-
-chrome.runtime.onInstalled.addListener(() => {
-
-    for (let [key, value] of Object.entries(mockData)) {
-        chrome.storage.local.set({[key]: value})
-    }
-    // updateStorageContents()
-    const rules = Object.entries(mockData).map(([path, data], index) => ({
+function updateRules(data) {
+    const rules = Object.entries(data).map(([path, data], index) => ({
         id: index + 1,
         priority: 1,
         action: {
@@ -36,37 +30,19 @@ chrome.runtime.onInstalled.addListener(() => {
         removeRuleIds: rules.map(rule => rule.id),
         addRules: rules
     });
+}
 
+chrome.runtime.onInstalled.addListener(() => {
+    chrome.storage.local.set(mockData, () => {
+        updateRules(mockData);
+    });
 });
 
-
 chrome.storage.onChanged.addListener((changes, namespace) => {
-    const res = {...mockData}
-    for (let [key, {oldValue, newValue}] of Object.entries(changes)) {
-        console.log(
-            `Storage key "${key}" in namespace "${namespace}" changed.`,
-            `Old value was "${oldValue}", new value is "${newValue}".`
-        );
-        res[key] = newValue
-    }
+    if (namespace !== 'local') return;
 
-    const rules = Object.entries(res).map(([path, data], index) => ({
-        id: index + 1,
-        priority: 1,
-        action: {
-            type: "redirect",
-            redirect: {
-                url: `data:application/json,${encodeURIComponent(JSON.stringify(data))}`
-            }
-        },
-        condition: {
-            urlFilter: `*${path}*`,
-            resourceTypes: ["xmlhttprequest"]
-        }
-    }));
-
-    chrome.declarativeNetRequest.updateDynamicRules({
-        removeRuleIds: rules.map(rule => rule.id),
-        addRules: rules
+    chrome.storage.local.get(null, (items) => {
+        console.log('Current local storage state:', items);
+        updateRules(items);
     });
 });
