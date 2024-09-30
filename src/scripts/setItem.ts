@@ -1,10 +1,10 @@
 import {updateStorageContents} from "./updateStorageContents";
 import {StoreType} from "../types";
 
-export const setItem = (key: string, value: string, setState: (store: StoreType) => void) => {
+export const setItem = (endpoint: string, response: string, setState: (store: StoreType) => void) => {
 
-    if (key && value) {
-        chrome.storage.local.set({[key]: JSON.parse(value)}, function () {
+    if (endpoint && response) {
+        chrome.storage.local.set({[endpoint]: JSON.parse(response)}, function () {
             if (chrome.runtime.lastError) {
                 console.error(chrome.runtime.lastError);
                 alert('Error setting item: ' + chrome.runtime.lastError.message);
@@ -14,6 +14,6 @@ export const setItem = (key: string, value: string, setState: (store: StoreType)
             }
         });
     } else {
-        alert('Please enter both key and value.');
+        alert('Please enter both endpoint and response.');
     }
 }
