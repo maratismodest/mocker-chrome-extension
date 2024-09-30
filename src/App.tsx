@@ -15,7 +15,7 @@ function App() {
     const [enabled, setEnabled] = useState(true);
 
     useEffect(() => {
-        chrome.storage.local.get(['isEnabled,key', 'value'], function (data) {
+        chrome.storage.local.get(['isEnabled', 'key', 'value'], function (data) {
             if (data.key) setKey(data.key);
             if (data.value) setValue(data.value);
             if (data.isEnabled) setEnabled(data.isEnabled)
