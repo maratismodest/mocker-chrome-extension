@@ -1,78 +1,62 @@
-body {
-    font-family: Arial, sans-serif;
-    width: 400px;
-    margin: 0 auto;
-    padding: 20px;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply w-96 mx-auto p-4
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        @apply mb-2
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 4px 8px;
+    }
+
+    button {
+        display: inline-block;
+        padding: 8px 16px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        outline: none;
+        color: #fff;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+
+    button:hover {
+        background-color: #3e8e41
+    }
+
+    button:active {
+        background-color: #3e8e41;
+        box-shadow: 0 1px #666;
+        transform: translateY(1px);
+    }
+
+    input[type="text"] {
+        @apply w-full border px-2 py-1 rounded
+    }
+
+    textarea {
+        @apply w-full border px-2 py-1 rounded
+    }
 }
 
-.input-group {
-    display: flex;
-    margin-bottom: 16px;
-}
+@layer components {
+    #enpoints {
+        margin-top: 8px;
+        border: 1px solid #ccc;
+        padding: 4px 8px;
+        white-space: pre-wrap;
+        max-height: 200px;
+        overflow-y: auto;
+    }
 
-label {
-    display: inline-block;
-    width: 80px;
-}
-
-input[type="text"] {
-    width: 100%;
-    padding: 2px 4px;
-}
-
-#enpoints {
-    margin-top: 16px;
-    border: 1px solid #ccc;
-    padding: 8px;
-    white-space: pre-wrap;
-    max-height: 200px;
-    overflow-y: auto;
-}
-
-ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-li {
-    margin: 0;
-    padding: 0;
-}
-
-button {
-    display: inline-block;
-    padding: 8px 16px;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    outline: none;
-    color: #fff;
-    background-color: #4CAF50;
-    border: none;
-    border-radius: 8px
-}
-
-button:hover {
-    background-color: #3e8e41
-}
-
-button:active {
-    background-color: #3e8e41;
-    box-shadow: 0 1px #666;
-    transform: translateY(1px);
-}
-
-textarea {
-    margin: 0;
-    width: 100%;
-    resize: none;
-    padding: 2px 4px;
-}
-
-.buttons {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
 }

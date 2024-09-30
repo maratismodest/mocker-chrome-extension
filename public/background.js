@@ -10,7 +10,14 @@ const mockData = {
     ]
 };
 
-function updateRules(data) {
+function updateRules(data, isEnabled) {
+    if (!isEnabled) {
+        chrome.declarativeNetRequest.updateDynamicRules({
+            removeRuleIds: Object.keys(data).map((_, index) => index + 1)
+        });
+        return;
+    }
+
     const rules = Object.entries(data).map(([path, data], index) => ({
         id: index + 1,
         priority: 1,
@@ -33,8 +40,8 @@ function updateRules(data) {
 }
 
 chrome.runtime.onInstalled.addListener(() => {
-    chrome.storage.local.set(mockData, () => {
-        updateRules(mockData);
+    chrome.storage.local.set({...mockData, isEnabled: false}, () => {
+        updateRules(mockData, false);
     });
 });
 
@@ -43,6 +50,6 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 
     chrome.storage.local.get(null, (items) => {
         console.log('Current local storage state:', items);
-        updateRules(items);
+        updateRules(items, items.isEnabled);
     });
 });

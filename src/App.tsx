@@ -6,39 +6,54 @@ import {getItem} from "./scripts/getItem";
 import {removeItem} from "./scripts/removeItem";
 import {clearAll} from "./scripts/clearAll";
 import {atomState} from "./store";
+import {onToggle} from "./scripts/onToggle";
 
 function App() {
     const [key, setKey] = useState('');
     const [value, setValue] = useState('');
     const [state, setState] = useAtom(atomState);
+    const [enabled, setEnabled] = useState(true);
     useEffect(() => {
         if (chrome?.storage?.local) {
             updateStorageContents(setState)
         }
     }, [chrome?.storage?.local]);
 
+    useEffect(() => {
+        chrome.storage.local.get('isEnabled', function (data) {
+            setEnabled(data.isEnabled)
+        });
+    }, []);
+
+    const handleToggle = (checked: boolean) => {
+        setEnabled(checked)
+        onToggle(checked)
+    }
+
     return (
         <>
-            <h1>Mock Data Extension</h1>
-
-            <ul>
-                <li className="input-group">
-                    <label htmlFor="key">Endpoint:</label>
+            <h1 className='text-2xl'>Mock Data Extension</h1>
+            <ul className='grid grid-cols-1 gap-2'>
+                <li className='flex items-center gap-2'>
+                    <label htmlFor="enable">Enable API Mocking</label>
+                    <input type="checkbox" id='enable' checked={enabled}
+                           onChange={(event) => handleToggle(event.target.checked)}/>
+                </li>
+                <li>
                     <input id="key"
                            type="text"
-                           placeholder="Enter endpoint"
+                           placeholder="Endpoint"
                            value={key}
                            onChange={(e) => setKey(e.target.value)}
                     />
                 </li>
 
-                <li className="input-group">
-                    <label htmlFor="value">Response:</label>
-                    <textarea id="value" placeholder="Enter json response" rows={5} value={value}
+                <li>
+                    <textarea id="value" placeholder="Response" rows={5} value={value}
                               onChange={(e) => setValue(e.target.value)}/>
                 </li>
             </ul>
-            <div className='buttons'>
+            <div className='flex gap-1 flex-wrap relative mt-2'>
                 <button onClick={() => setItem(key, value, setState)}>Set Item</button>
                 <button onClick={() => getItem(key, setValue)}>Get Item</button>
                 <button onClick={() => {
@@ -51,9 +66,12 @@ function App() {
                 <button onClick={() => clearAll(setState)}>Clear All</button>
             </div>
 
-            <h2>Endpoints:</h2>
-            <div id="enpoints">{JSON.stringify(state, null, 2)}</div>
-            <div id="error" style={{color: 'red'}}></div>
+            <div className='mt-4'>
+                <h2>Endpoints:</h2>
+                <div id="enpoints">{JSON.stringify(state, null, 2)}</div>
+                <div id="error" className='text-red-700'></div>
+            </div>
+
         </>
     )
 }
