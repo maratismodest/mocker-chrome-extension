@@ -8,12 +8,14 @@
     <title>Document</title>
 </head>
 <body>
+<input type="text" placeholder="endpoint" value="/api/users"/>
 <button>FETCH</button>
 </body>
 <script>
+    const input = document.querySelector('input');
     const button = document.querySelector('button');
     button.addEventListener('click', () => {
-        fetch('https://example.com/api/users')
+        fetch(`https://example.com${input.value}`)
             .then(response => response.json())
             .then(data => console.log(data));
     });
