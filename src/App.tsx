@@ -8,6 +8,8 @@ import {removeItem} from "./scripts/removeItem";
 import {clearAll} from "./scripts/clearAll";
 import {onToggle} from "./scripts/onToggle";
 
+const KEYS = ['isEnabled', 'endpoint', 'response']
+
 function App() {
     const [endpoint, setEndpoint] = useState('');
     const [response, setResponse] = useState('');
@@ -15,7 +17,7 @@ function App() {
     const [enabled, setEnabled] = useState(false);
 
     useEffect(() => {
-        chrome.storage.local.get(['isEnabled', 'endpoint', 'response'], function (data) {
+        chrome.storage.local.get(KEYS, function (data) {
             if (data.endpoint) setEndpoint(data.endpoint);
             if (data.response) setResponse(data.response);
             setEnabled(data.isEnabled)
@@ -35,12 +37,12 @@ function App() {
 
     const handleKeyChange = (value: string) => {
         setEndpoint(value)
-        chrome.storage.local.set({key: value});
+        chrome.storage.local.set({endpoint: value});
     }
 
     const handleValueChange = (value: string) => {
         setResponse(value)
-        chrome.storage.local.set({value: value});
+        chrome.storage.local.set({response: value});
     }
 
     const handleReset = () => {
@@ -83,7 +85,7 @@ function App() {
                 </li>
                 <li>
                     <input
-                        id="key"
+                        id="endpoint"
                         type="text"
                         placeholder="Endpoint"
                         value={endpoint}
@@ -93,7 +95,7 @@ function App() {
 
                 <li>
                     <textarea
-                        id="value"
+                        id="response"
                         placeholder="Response"
                         rows={5}
                         value={response}
@@ -111,7 +113,10 @@ function App() {
 
             <div className='mt-4'>
                 <h2>Endpoints:</h2>
-                <div id="endpoints">{JSON.stringify(state, null, 2)}</div>
+                <div
+                    id="endpoints">
+                    {JSON.stringify(Object.fromEntries(Object.entries(state).filter(([key]) => !KEYS.includes(key))), null, 2)}
+                </div>
                 <span id="error" className=' text-red-700'></span>
             </div>
 
