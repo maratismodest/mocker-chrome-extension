@@ -1,6 +1,4 @@
-import {StoreType} from "../types";
-
-export const updateStorageContents = (setState: (items: StoreType) => void) => {
+export const updateStorageContents = () => {
 
     chrome.storage.local.get(null, function (items) {
         const endpoints = document.getElementById('endpoints');
@@ -12,7 +10,7 @@ export const updateStorageContents = (setState: (items: StoreType) => void) => {
             }
         } else {
             if (endpoints) {
-                setState(items)
+                endpoints.textContent = JSON.stringify(items, null, 2);
             }
         }
     });

@@ -6,9 +6,12 @@ import {setItem} from "./scripts/setItem";
 import {getItem} from "./scripts/getItem";
 import {removeItem} from "./scripts/removeItem";
 import {clearAll} from "./scripts/clearAll";
-import {onToggle} from "./scripts/onToggle";
 
 const KEYS = ['isEnabled', 'endpoint', 'response']
+
+const setStorage = (key: string, value: unknown) => {
+    chrome.storage.local.set({[key]: value});
+}
 
 function App() {
     const [endpoint, setEndpoint] = useState('');
@@ -17,37 +20,32 @@ function App() {
     const [enabled, setEnabled] = useState(false);
 
     useEffect(() => {
-        chrome.storage.local.get(KEYS, function (data) {
+        chrome.storage.local.get(null, function (data) {
             if (data.endpoint) setEndpoint(data.endpoint);
             if (data.response) setResponse(data.response);
             setEnabled(data.isEnabled)
+            updateStorageContents()
         });
-    }, []);
-
-    useEffect(() => {
-        if (chrome?.storage?.local) {
-            updateStorageContents(setState)
-        }
-    }, [chrome?.storage?.local]);
+    }, [setState]);
 
     const handleToggle = (checked: boolean) => {
         setEnabled(checked)
-        onToggle(checked)
+        setStorage('isEnabled', checked)
     }
 
-    const handleKeyChange = (value: string) => {
+    const handleEndpointChange = (value: string) => {
         setEndpoint(value)
-        chrome.storage.local.set({endpoint: value});
+        setStorage('endpoint', value)
     }
 
     const handleValueChange = (value: string) => {
         setResponse(value)
-        chrome.storage.local.set({response: value});
+        setStorage('response', value)
     }
 
     const handleReset = () => {
         handleToggle(false)
-        handleKeyChange('')
+        handleEndpointChange('')
         handleValueChange('')
     }
 
@@ -56,18 +54,18 @@ function App() {
     }
 
     const handleSetItem = () => {
-        setItem(endpoint, response, setState)
+        setItem(endpoint, response)
     }
 
     const handleRemoveItem = () => {
         removeItem(endpoint, () => {
             setEndpoint('')
             setResponse('')
-        }, setState)
+        })
     }
 
     const handleClearAll = () => {
-        clearAll(setState)
+        clearAll()
     }
 
     return (
@@ -89,7 +87,7 @@ function App() {
                         type="text"
                         placeholder="Endpoint"
                         value={endpoint}
-                        onChange={(e) => handleKeyChange(e.target.value)}
+                        onChange={(e) => handleEndpointChange(e.target.value)}
                     />
                 </li>
 

@@ -1,14 +1,13 @@
 import {updateStorageContents} from "./updateStorageContents";
-import {StoreType} from "../types";
 
-export const removeItem = (key: string, onSuccess: () => void, setState: (store: StoreType) => void) => {
+export const removeItem = (key: string, onSuccess: () => void) => {
     if (key) {
         chrome.storage.local.remove(key, function () {
             if (chrome.runtime.lastError) {
                 console.error(chrome.runtime.lastError);
                 alert('Error removing item: ' + chrome.runtime.lastError.message);
             } else {
-                updateStorageContents(setState);
+                updateStorageContents();
                 alert('Item removed successfully!');
                 onSuccess()
             }

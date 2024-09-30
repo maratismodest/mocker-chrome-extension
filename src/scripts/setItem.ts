@@ -1,7 +1,6 @@
 import {updateStorageContents} from "./updateStorageContents";
-import {StoreType} from "../types";
 
-export const setItem = (endpoint: string, response: string, setState: (store: StoreType) => void) => {
+export const setItem = (endpoint: string, response: string) => {
 
     if (endpoint && response) {
         chrome.storage.local.set({[endpoint]: JSON.parse(response)}, function () {
@@ -9,7 +8,7 @@ export const setItem = (endpoint: string, response: string, setState: (store: St
                 console.error(chrome.runtime.lastError);
                 alert('Error setting item: ' + chrome.runtime.lastError.message);
             } else {
-                updateStorageContents(setState);
+                updateStorageContents();
                 alert('Item set successfully!');
             }
         });
