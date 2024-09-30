@@ -13,21 +13,34 @@ function App() {
     const [value, setValue] = useState('');
     const [state, setState] = useAtom(atomState);
     const [enabled, setEnabled] = useState(true);
+
+    useEffect(() => {
+        chrome.storage.local.get(['isEnabled,key', 'value'], function (data) {
+            if (data.key) setKey(data.key);
+            if (data.value) setValue(data.value);
+            if (data.isEnabled) setEnabled(data.isEnabled)
+        });
+    }, []);
+
     useEffect(() => {
         if (chrome?.storage?.local) {
             updateStorageContents(setState)
         }
     }, [chrome?.storage?.local]);
 
-    useEffect(() => {
-        chrome.storage.local.get('isEnabled', function (data) {
-            setEnabled(data.isEnabled)
-        });
-    }, []);
-
     const handleToggle = (checked: boolean) => {
         setEnabled(checked)
         onToggle(checked)
+    }
+
+    const handleKeyChange = (value: string) => {
+        setKey(value)
+        chrome.storage.local.set({key: value});
+    }
+
+    const handleValueChange = (value: string) => {
+        setValue(value)
+        chrome.storage.local.set({value: value});
     }
 
     return (
@@ -44,13 +57,13 @@ function App() {
                            type="text"
                            placeholder="Endpoint"
                            value={key}
-                           onChange={(e) => setKey(e.target.value)}
+                           onChange={(e) => handleKeyChange(e.target.value)}
                     />
                 </li>
 
                 <li>
                     <textarea id="value" placeholder="Response" rows={5} value={value}
-                              onChange={(e) => setValue(e.target.value)}/>
+                              onChange={(e) => handleValueChange(e.target.value)}/>
                 </li>
             </ul>
             <div className='flex gap-1 flex-wrap relative mt-2'>
