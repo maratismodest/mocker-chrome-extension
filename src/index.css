@@ -12,32 +12,15 @@
     }
 
     input[type="text"] {
-        width: 100%;
-        padding: 4px 8px;
+        @apply w-full px-2 py-1
     }
 
     button {
-        display: inline-block;
-        padding: 8px 16px;
-        cursor: pointer;
-        text-align: center;
-        text-decoration: none;
-        outline: none;
-        color: #fff;
-        background-color: #4CAF50;
-        border: none;
-        border-radius: 8px;
-        font-size: 14px;
+        @apply px-2 py-2 bg-green-600 text-white rounded cursor-pointer border-none text-sm;
     }
 
     button:hover {
-        background-color: #3e8e41
-    }
-
-    button:active {
-        background-color: #3e8e41;
-        box-shadow: 0 1px #666;
-        transform: translateY(1px);
+        @apply bg-green-700
     }
 
     input[type="text"] {
@@ -50,13 +33,7 @@
 }
 
 @layer components {
-    #enpoints {
-        margin-top: 8px;
-        border: 1px solid #ccc;
-        padding: 4px 8px;
-        white-space: pre-wrap;
-        max-height: 200px;
-        overflow-y: auto;
+    #endpoints {
+        @apply mt-4 whitespace-pre-wrap max-h-52 overflow-y-auto border border-gray-300 p-2 rounded
     }
-
 }

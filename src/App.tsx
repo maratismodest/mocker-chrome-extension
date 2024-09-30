@@ -1,11 +1,11 @@
 import {useEffect, useState} from "react";
 import {useAtom} from 'jotai';
+import {atomState} from "./store";
 import {updateStorageContents} from './scripts/updateStorageContents'
 import {setItem} from "./scripts/setItem";
 import {getItem} from "./scripts/getItem";
 import {removeItem} from "./scripts/removeItem";
 import {clearAll} from "./scripts/clearAll";
-import {atomState} from "./store";
 import {onToggle} from "./scripts/onToggle";
 
 function App() {
@@ -68,8 +68,8 @@ function App() {
 
             <div className='mt-4'>
                 <h2>Endpoints:</h2>
-                <div id="enpoints">{JSON.stringify(state, null, 2)}</div>
-                <div id="error" className='text-red-700'></div>
+                <div id="endpoints">{JSON.stringify(state, null, 2)}</div>
+                <span id="error" className=' text-red-700'></span>
             </div>
 
         </>
