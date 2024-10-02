@@ -5,8 +5,7 @@
   "description": "Returns mock data for specific routes",
   "permissions": [
     "declarativeNetRequest",
-    "storage",
-    "activeTab"
+    "storage"
   ],
   "host_permissions": [
     "<all_urls>"

@@ -1,13 +1,9 @@
 import {useEffect, useState} from "react";
-import {useAtom} from 'jotai';
-import {atomState} from "./store";
 import {updateStorageContents} from './scripts/updateStorageContents'
 import {setItem} from "./scripts/setItem";
 import {getItem} from "./scripts/getItem";
 import {removeItem} from "./scripts/removeItem";
 import {clearAll} from "./scripts/clearAll";
-
-const KEYS = ['isEnabled', 'endpoint', 'response']
 
 const setStorage = (key: string, value: unknown) => {
     chrome.storage.local.set({[key]: value});
@@ -16,7 +12,6 @@ const setStorage = (key: string, value: unknown) => {
 function App() {
     const [endpoint, setEndpoint] = useState('');
     const [response, setResponse] = useState('');
-    const [state, setState] = useAtom(atomState);
     const [enabled, setEnabled] = useState(false);
 
     useEffect(() => {
@@ -26,7 +21,7 @@ function App() {
             setEnabled(data.isEnabled)
             updateStorageContents()
         });
-    }, [setState]);
+    }, []);
 
     const handleToggle = (checked: boolean) => {
         setEnabled(checked)
@@ -71,15 +66,16 @@ function App() {
     return (
         <>
             <h1 className='text-2xl'>Mock Data Extension</h1>
-            <ul className='grid grid-cols-1 gap-2'>
+            <ul className='grid grid-cols-1 gap-3'>
                 <li className='flex items-center gap-2'>
-                    <label htmlFor="enable">Enable API Mocking</label>
-                    <input
-                        type="checkbox"
-                        id='enable'
-                        checked={enabled}
-                        onChange={(event) => handleToggle(event.target.checked)}
-                    />
+                    <label className="inline-flex items-center cursor-pointer">
+                        <input type="checkbox" checked={enabled} className="sr-only peer"
+                               onChange={(event) => handleToggle(event.target.checked)}/>
+                        <div
+                            className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                        <span
+                            className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Enable API Mocking</span>
+                    </label>
                 </li>
                 <li>
                     <input
@@ -106,14 +102,13 @@ function App() {
                 <button onClick={handleGetItem}>Get Item</button>
                 <button onClick={handleRemoveItem}>Remove Item</button>
                 <button onClick={handleClearAll}>Clear All</button>
-                <button onClick={handleReset}>Reset</button>
+                <button onClick={handleReset} className='bg-transparent'>Reset</button>
             </div>
 
             <div className='mt-4'>
                 <h2>Endpoints:</h2>
                 <div
                     id="endpoints">
-                    {JSON.stringify(Object.fromEntries(Object.entries(state).filter(([key]) => !KEYS.includes(key))), null, 2)}
                 </div>
                 <span id="error" className=' text-red-700'></span>
             </div>

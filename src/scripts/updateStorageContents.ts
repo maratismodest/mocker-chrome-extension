@@ -1,3 +1,4 @@
+const KEYS = ['isEnabled', 'endpoint', 'response']
 export const updateStorageContents = () => {
 
     chrome.storage.local.get(null, function (items) {
@@ -10,7 +11,7 @@ export const updateStorageContents = () => {
             }
         } else {
             if (endpoints) {
-                endpoints.textContent = JSON.stringify(items, null, 2);
+                endpoints.textContent = JSON.stringify(Object.fromEntries(Object.entries(items).filter(([key]) => !KEYS.includes(key))), null, 2)
             }
         }
     });
