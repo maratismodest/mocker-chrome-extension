@@ -34,6 +34,6 @@
 
 @layer components {
     #endpoints {
-        @apply mt-4 whitespace-pre-wrap max-h-52 overflow-y-auto border border-gray-300 p-2 rounded
+        @apply whitespace-pre-wrap max-h-52 overflow-y-auto border border-gray-300 p-2 rounded
     }
 }

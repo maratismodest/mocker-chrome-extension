@@ -10,7 +10,7 @@ const mockData = {
     ]
 };
 
-function updateRules(data, isEnabled) {
+const updateRules = (data, isEnabled) => {
     if (!isEnabled) {
         chrome.declarativeNetRequest.updateDynamicRules({
             removeRuleIds: Object.keys(data).map((_, index) => index + 1)

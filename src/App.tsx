@@ -1,32 +1,7 @@
 import {ChangeEvent, useEffect, useRef, useState} from "react";
 import {useAtom} from 'jotai'
-import {atomWithStorage} from 'jotai/utils'
-import {setItem, getItem, removeItem, updateStorageContents, clearAll, setStorage} from "./scripts";
-
-const endpointAtom = atomWithStorage<string>('endpoint', '')
-const responseAtom = atomWithStorage<string>('response', '')
-
-const handleExport = (jsonData: unknown) => {
-    // Convert the JSON object to a string
-    const jsonString = JSON.stringify(jsonData, null, 2);
-
-    // Create a Blob with the JSON data
-    const blob = new Blob([jsonString], {type: 'application/json'});
-
-    // Create a URL for the Blob
-    const url = URL.createObjectURL(blob);
-
-    // Create a temporary anchor element and trigger the download
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'mock-data-extension.json';
-    document.body.appendChild(a);
-    a.click();
-
-    // Clean up
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-};
+import {setItem, getItem, removeItem, updateStorageContents, clearAll, setStorage, handleExport} from "./helpers";
+import {endpointAtom, responseAtom} from "./store";
 
 function App() {
     const [endpoint, setEndpoint] = useAtom(endpointAtom);
@@ -78,7 +53,9 @@ function App() {
     }
 
     const handleClearAll = () => {
-        clearAll()
+        if (confirm('Are you sure you want to clear all data?')) {
+            clearAll()
+        }
     }
 
     const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
@@ -139,26 +116,24 @@ function App() {
                     />
                 </li>
             </ul>
-            <div className='flex gap-1 flex-wrap relative mt-2'>
+            <div className='flex gap-1 flex-wrap relative mt-2 justify-between'>
                 <button onClick={handleSetItem}>Set Item</button>
                 <button onClick={handleGetItem}>Get Item</button>
                 <button onClick={handleRemoveItem}>Remove Item</button>
-                <button onClick={handleClearAll}>Clear All</button>
-                <button onClick={handleReset} className='bg-orange-500'>Reset</button>
+                <button onClick={handleReset}>Reset Form</button>
             </div>
-
             <div className='flex gap-1 flex-wrap relative mt-2'>
                 <button
                     onClick={() => ref.current && handleExport(JSON.parse(ref.current.innerHTML))}
-                    className="bg-blue-500 hover:bg-blue-700 text-white rounded"
+                    className="bg-blue-500 hover:bg-blue-700 text-white rounded px-4"
                 >
-                    Export JSON
+                    Export
                 </button>
                 <button
                     onClick={() => inputRef.current && inputRef.current.click()}
-                    className="bg-red-500 hover:bg-red-700 text-white rounded"
+                    className="bg-orange-400 hover:bg-orange-600 text-white rounded px-4"
                 >
-                    Import JSON
+                    Import
                 </button>
                 <input
                     hidden
@@ -168,8 +143,8 @@ function App() {
                     onChange={handleFileUpload}
                     className="mb-4 p-2 border border-gray-300 rounded"
                 />
+                <button onClick={handleClearAll} className='bg-red-500 hover:bg-red-700 ml-auto'>Clear All</button>
             </div>
-
 
             <div className='mt-4'>
                 <h2>Endpoints:</h2>
