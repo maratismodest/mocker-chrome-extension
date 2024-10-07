@@ -1,4 +1,4 @@
-const KEYS = ['isEnabled', 'endpoint', 'response']
+const KEYS = ['isEnabled']
 export const updateStorageContents = () => {
 
     chrome.storage.local.get(null, function (items) {

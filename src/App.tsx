@@ -1,23 +1,43 @@
-import {useEffect, useState} from "react";
-import {updateStorageContents} from './scripts/updateStorageContents'
-import {setItem} from "./scripts/setItem";
-import {getItem} from "./scripts/getItem";
-import {removeItem} from "./scripts/removeItem";
-import {clearAll} from "./scripts/clearAll";
+import {ChangeEvent, useEffect, useRef, useState} from "react";
+import {useAtom} from 'jotai'
+import {atomWithStorage} from 'jotai/utils'
+import {setItem, getItem, removeItem, updateStorageContents, clearAll, setStorage} from "./scripts";
 
-const setStorage = (key: string, value: unknown) => {
-    chrome.storage.local.set({[key]: value});
-}
+const endpointAtom = atomWithStorage<string>('endpoint', '')
+const responseAtom = atomWithStorage<string>('response', '')
+
+const handleExport = (jsonData: unknown) => {
+    // Convert the JSON object to a string
+    const jsonString = JSON.stringify(jsonData, null, 2);
+
+    // Create a Blob with the JSON data
+    const blob = new Blob([jsonString], {type: 'application/json'});
+
+    // Create a URL for the Blob
+    const url = URL.createObjectURL(blob);
+
+    // Create a temporary anchor element and trigger the download
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'mock-data-extension.json';
+    document.body.appendChild(a);
+    a.click();
+
+    // Clean up
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+};
 
 function App() {
-    const [endpoint, setEndpoint] = useState('');
-    const [response, setResponse] = useState('');
+    const [endpoint, setEndpoint] = useAtom(endpointAtom);
+    const [response, setResponse] = useAtom(responseAtom);
     const [enabled, setEnabled] = useState(false);
+
+    const ref = useRef<HTMLDivElement | null>(null)
+    const inputRef = useRef<HTMLInputElement | null>(null)
 
     useEffect(() => {
         chrome.storage.local.get(null, function (data) {
-            if (data.endpoint) setEndpoint(data.endpoint);
-            if (data.response) setResponse(data.response);
             setEnabled(data.isEnabled)
             updateStorageContents()
         });
@@ -30,18 +50,16 @@ function App() {
 
     const handleEndpointChange = (value: string) => {
         setEndpoint(value)
-        setStorage('endpoint', value)
     }
 
-    const handleValueChange = (value: string) => {
+    const handleResponseChange = (value: string) => {
         setResponse(value)
-        setStorage('response', value)
     }
 
     const handleReset = () => {
         handleToggle(false)
         handleEndpointChange('')
-        handleValueChange('')
+        handleResponseChange('')
     }
 
     const handleGetItem = () => {
@@ -62,6 +80,30 @@ function App() {
     const handleClearAll = () => {
         clearAll()
     }
+
+    const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = (e: ProgressEvent<FileReader>) => {
+            try {
+                const result = e.target?.result;
+                if (typeof result === 'string') {
+                    const json = JSON.parse(result);
+                    Object.entries(json).forEach(([key, value]) => {
+                        setItem(key, JSON.stringify(value));
+                    });
+                }
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                alert('Error parsing JSON file. Please make sure it\'s a valid JSON.');
+            }
+        };
+
+        reader.readAsText(file);
+    };
 
     return (
         <>
@@ -93,7 +135,7 @@ function App() {
                         placeholder="Response"
                         rows={5}
                         value={response}
-                        onChange={(e) => handleValueChange(e.target.value)}
+                        onChange={(e) => handleResponseChange(e.target.value)}
                     />
                 </li>
             </ul>
@@ -102,15 +144,37 @@ function App() {
                 <button onClick={handleGetItem}>Get Item</button>
                 <button onClick={handleRemoveItem}>Remove Item</button>
                 <button onClick={handleClearAll}>Clear All</button>
-                <button onClick={handleReset} className='bg-transparent'>Reset</button>
+                <button onClick={handleReset} className='bg-orange-500'>Reset</button>
             </div>
+
+            <div className='flex gap-1 flex-wrap relative mt-2'>
+                <button
+                    onClick={() => ref.current && handleExport(JSON.parse(ref.current.innerHTML))}
+                    className="bg-blue-500 hover:bg-blue-700 text-white rounded"
+                >
+                    Export JSON
+                </button>
+                <button
+                    onClick={() => inputRef.current && inputRef.current.click()}
+                    className="bg-red-500 hover:bg-red-700 text-white rounded"
+                >
+                    Import JSON
+                </button>
+                <input
+                    hidden
+                    ref={inputRef}
+                    type="file"
+                    accept=".json"
+                    onChange={handleFileUpload}
+                    className="mb-4 p-2 border border-gray-300 rounded"
+                />
+            </div>
+
 
             <div className='mt-4'>
                 <h2>Endpoints:</h2>
-                <div
-                    id="endpoints">
-                </div>
-                <span id="error" className=' text-red-700'></span>
+                <div id="endpoints" ref={ref}/>
+                <span id="error" className='text-red-700'></span>
             </div>
 
         </>

@@ -1,0 +1,6 @@
+export * from './setItem'
+export * from './getItem'
+export * from './removeItem'
+export * from './updateStorageContents'
+export * from './clearAll'
+export * from './setStorage'
