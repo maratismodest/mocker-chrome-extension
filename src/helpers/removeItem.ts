@@ -1,6 +1,6 @@
 import {updateStorageContents} from "./updateStorageContents";
 
-export const removeItem = (key: string, onSuccess: () => void) => {
+export const removeItem = (key: string) => {
     if (key) {
         chrome.storage.local.remove(key, function () {
             if (chrome.runtime.lastError) {
@@ -9,7 +9,6 @@ export const removeItem = (key: string, onSuccess: () => void) => {
             } else {
                 updateStorageContents();
                 alert('Item removed successfully!');
-                onSuccess()
             }
         });
     } else {

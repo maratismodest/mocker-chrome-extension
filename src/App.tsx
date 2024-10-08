@@ -1,7 +1,10 @@
-import {ChangeEvent, useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useAtom} from 'jotai'
-import {setItem, getItem, removeItem, updateStorageContents, clearAll, setStorage, handleExport} from "./helpers";
+import {
+    setItem, getItem, removeItem, clearAll, setStorage, handleExport, handleFileUpload, updateStorageContents,
+} from "./helpers";
 import {endpointAtom, responseAtom} from "./store";
+
 
 function App() {
     const [endpoint, setEndpoint] = useAtom(endpointAtom);
@@ -32,7 +35,6 @@ function App() {
     }
 
     const handleReset = () => {
-        handleToggle(false)
         handleEndpointChange('')
         handleResponseChange('')
     }
@@ -46,10 +48,8 @@ function App() {
     }
 
     const handleRemoveItem = () => {
-        removeItem(endpoint, () => {
-            setEndpoint('')
-            setResponse('')
-        })
+        removeItem(endpoint)
+        handleReset()
     }
 
     const handleClearAll = () => {
@@ -58,29 +58,6 @@ function App() {
         }
     }
 
-    const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-
-        reader.onload = (e: ProgressEvent<FileReader>) => {
-            try {
-                const result = e.target?.result;
-                if (typeof result === 'string') {
-                    const json = JSON.parse(result);
-                    Object.entries(json).forEach(([key, value]) => {
-                        setItem(key, JSON.stringify(value));
-                    });
-                }
-            } catch (error) {
-                console.error('Error parsing JSON:', error);
-                alert('Error parsing JSON file. Please make sure it\'s a valid JSON.');
-            }
-        };
-
-        reader.readAsText(file);
-    };
 
     return (
         <>
