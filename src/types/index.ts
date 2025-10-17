@@ -1,1 +1,0 @@
-export type StoreType = { [p: string]: unknown }
