@@ -1,4 +1,5 @@
 import {useEffect, useRef, useState} from "react";
+import clsx from "clsx";
 import {useAtom} from 'jotai'
 import {
     setItem, getItem, removeItem, clearAll, setStorage, handleExport, handleFileUpload, updateStorageContents,
@@ -58,6 +59,13 @@ function App() {
         }
     }
 
+    const buttons = [
+        {label: 'Set Item', onClick: handleSetItem},
+        {label: 'Get Item', onClick: handleGetItem},
+        {label: 'Remove Item', onClick: handleRemoveItem},
+        {label: 'Reset Form', onClick: handleReset},
+    ]
+
 
     return (
         <>
@@ -93,22 +101,30 @@ function App() {
                     />
                 </li>
             </ul>
-            <div className='flex gap-1 flex-wrap relative mt-2 justify-between'>
-                <button onClick={handleSetItem}>Set Item</button>
-                <button onClick={handleGetItem}>Get Item</button>
-                <button onClick={handleRemoveItem}>Remove Item</button>
-                <button onClick={handleReset}>Reset Form</button>
-            </div>
+            <ul className='flex gap-1 flex-wrap relative mt-2 justify-between'>
+                {buttons.map((button) => (
+                    <li key={button.label}>
+                        <button
+                            key={button.label}
+                            onClick={button.onClick}
+                            className="bg-green-500 hover:bg-green-700 text-white rounded px-4"
+                        >
+                            {button.label}
+                        </button>
+                    </li>
+                ))}
+
+            </ul>
             <div className='flex gap-1 flex-wrap relative mt-2'>
                 <button
                     onClick={() => ref.current && handleExport(JSON.parse(ref.current.innerHTML))}
-                    className="bg-blue-500 hover:bg-blue-700 text-white rounded px-4"
+                    className={clsx("bg-blue-500 hover:bg-blue-700", "text-white rounded px-4")}
                 >
                     Export
                 </button>
                 <button
                     onClick={() => inputRef.current && inputRef.current.click()}
-                    className="bg-orange-400 hover:bg-orange-600 text-white rounded px-4"
+                    className={clsx("bg-orange-400 hover:bg-orange-600", "text-white rounded px-4")}
                 >
                     Import
                 </button>
