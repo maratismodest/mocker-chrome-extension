@@ -6,18 +6,27 @@ import {
 } from "./helpers";
 import {endpointAtom, responseAtom} from "./store";
 
+const HTTP_METHODS = ['GET', 'POST', 'PUT', 'DELETE'] as const;
+type HttpMethod = (typeof HTTP_METHODS)[number];
+
 
 function App() {
     const [endpoint, setEndpoint] = useAtom(endpointAtom);
     const [response, setResponse] = useAtom(responseAtom);
     const [enabled, setEnabled] = useState(false);
+    const [selectedMethods, setSelectedMethods] = useState<Record<HttpMethod, boolean>>({
+        GET: true,
+        POST: true,
+        PUT: true,
+        DELETE: true,
+    });
 
     const ref = useRef<HTMLDivElement | null>(null)
     const inputRef = useRef<HTMLInputElement | null>(null)
 
     useEffect(() => {
         chrome.storage.local.get(null, function (data) {
-            setEnabled(data.isEnabled)
+            setEnabled(typeof data.isEnabled === 'boolean' ? data.isEnabled : false)
             updateStorageContents()
         });
     }, []);
@@ -33,6 +42,13 @@ function App() {
 
     const handleResponseChange = (value: string) => {
         setResponse(value)
+    }
+
+    const handleMethodToggle = (method: HttpMethod, checked: boolean) => {
+        setSelectedMethods((prev) => ({
+            ...prev,
+            [method]: checked,
+        }))
     }
 
     const handleReset = () => {
@@ -89,6 +105,22 @@ function App() {
                         value={endpoint}
                         onChange={(e) => handleEndpointChange(e.target.value)}
                     />
+                </li>
+
+                <li>
+                    <fieldset className='flex flex-wrap gap-3'>
+                        <legend className='mb-1 text-sm font-medium'>Methods</legend>
+                        {HTTP_METHODS.map((method) => (
+                            <label key={method} className='inline-flex items-center gap-1 text-sm'>
+                                <input
+                                    type="checkbox"
+                                    checked={selectedMethods[method]}
+                                    onChange={(e) => handleMethodToggle(method, e.target.checked)}
+                                />
+                                <span>{method}</span>
+                            </label>
+                        ))}
+                    </fieldset>
                 </li>
 
                 <li>
