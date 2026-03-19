@@ -4,10 +4,14 @@ import {useAtom} from 'jotai'
 import {
     setItem, getItem, removeItem, clearAll, setStorage, handleExport, handleFileUpload, updateStorageContents,
 } from "./helpers";
-import {endpointAtom, responseAtom} from "./store";
+import {endpointAtom, methodAtom, responseAtom} from "./store";
+import type {HttpMethod} from "./store";
 
+
+const HTTP_METHODS: HttpMethod[] = ['GET', 'POST', 'PUT', 'DELETE'];
 
 function App() {
+    const [method, setMethod] = useAtom(methodAtom);
     const [endpoint, setEndpoint] = useAtom(endpointAtom);
     const [response, setResponse] = useAtom(responseAtom);
     const [enabled, setEnabled] = useState(false);
@@ -27,8 +31,12 @@ function App() {
         setStorage('isEnabled', checked)
     }
 
+    const handleMethodChange = (value: HttpMethod) => {
+        setMethod(value);
+    };
+
     const handleEndpointChange = (value: string) => {
-        setEndpoint(value)
+        setEndpoint(value);
     }
 
     const handleResponseChange = (value: string) => {
@@ -41,16 +49,16 @@ function App() {
     }
 
     const handleGetItem = () => {
-        getItem(endpoint, setResponse)
-    }
+        getItem(method, endpoint, setResponse);
+    };
 
     const handleSetItem = () => {
-        setItem(endpoint, response)
-    }
+        setItem(method, endpoint, response);
+    };
 
     const handleRemoveItem = () => {
-        removeItem(endpoint)
-        handleReset()
+        removeItem(method, endpoint);
+        handleReset();
     }
 
     const handleClearAll = () => {
@@ -80,6 +88,21 @@ function App() {
                         <span
                             className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Enable API Mocking</span>
                     </label>
+                </li>
+                <li className="flex items-center gap-2">
+                    <label htmlFor="method" className="text-sm font-medium text-gray-700 dark:text-gray-300 shrink-0">
+                        Method:
+                    </label>
+                    <select
+                        id="method"
+                        value={method}
+                        onChange={(e) => handleMethodChange(e.target.value as HttpMethod)}
+                        className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                    >
+                        {HTTP_METHODS.map((m) => (
+                            <option key={m} value={m}>{m}</option>
+                        ))}
+                    </select>
                 </li>
                 <li>
                     <input

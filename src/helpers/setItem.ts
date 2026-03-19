@@ -1,9 +1,12 @@
 import {updateStorageContents} from "./updateStorageContents";
+import type {HttpMethod} from "../store";
 
-export const setItem = (endpoint: string, response: string) => {
+const getStorageKey = (method: HttpMethod, endpoint: string) => `${method}:${endpoint}`;
 
+export const setItem = (method: HttpMethod, endpoint: string, response: string) => {
     if (endpoint && response) {
-        chrome.storage.local.set({[endpoint]: JSON.parse(response)}, function () {
+        const key = getStorageKey(method, endpoint);
+        chrome.storage.local.set({[key]: JSON.parse(response)}, function () {
             if (chrome.runtime.lastError) {
                 console.error(chrome.runtime.lastError);
                 alert('Error setting item: ' + chrome.runtime.lastError.message);
