@@ -1,10 +1,26 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentcolor);
+    }
+}
 
 @layer base {
     body {
-        @apply w-96 mx-auto p-4
+        @apply w-md mx-auto p-4
     }
 
     h1, h2, h3, h4, h5, h6 {
@@ -16,7 +32,7 @@
     }
 
     button {
-        @apply px-2 py-2 bg-green-600 text-white rounded cursor-pointer border-none text-sm;
+        @apply px-2 py-2 bg-green-600 text-white rounded-sm cursor-pointer border-none text-sm;
     }
 
     button:hover {
@@ -24,16 +40,20 @@
     }
 
     input[type="text"] {
-        @apply w-full border px-2 py-1 rounded
+        @apply w-full border px-2 py-1 rounded-sm
     }
 
     textarea {
-        @apply w-full border px-2 py-1 rounded
+        @apply w-full border px-2 py-1 rounded-sm
     }
 }
 
 @layer components {
     #endpoints {
-        @apply whitespace-pre-wrap max-h-52 overflow-y-auto border border-gray-300 p-2 rounded
+        @apply whitespace-pre-wrap max-h-52 overflow-y-auto border border-gray-300 p-2 rounded-sm
+    }
+
+    .form-input-group {
+        @apply flex items-center gap-2
     }
 }
