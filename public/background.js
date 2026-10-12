@@ -22,12 +22,22 @@ const mockData = {
     ]
 };
 
+// The URL path must end with `path` (any prefix such as host or base path is allowed,
+// query string and hash are ignored). `*` in `path` matches any characters within the path.
+const buildRegexFilter = (path) => {
+    const pattern = path
+        .split('*')
+        .map(part => part.replace(/[.+?^${}()|[\]\\]/g, '\\$&'))
+        .join('[^?#]*');
+    return `^[^?#]*${pattern}([?#].*)?$`;
+};
+
 const buildRules = (data) => Object.entries(data)
     .filter(([key]) => !KEYS.includes(key))
     .map(([key, mockResponse], index) => {
         const { method, path } = parseStorageKey(key);
         const condition = {
-            urlFilter: `*${path}*`,
+            regexFilter: buildRegexFilter(path),
             resourceTypes: ["xmlhttprequest"]
         };
         if (method) {
