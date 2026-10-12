@@ -22,17 +22,9 @@ const mockData = {
     ]
 };
 
-const updateRules = (data, isEnabled) => {
-    const entries = Object.entries(data).filter(([key]) => !KEYS.includes(key));
-
-    if (!isEnabled) {
-        chrome.declarativeNetRequest.updateDynamicRules({
-            removeRuleIds: entries.map((_, index) => index + 1)
-        });
-        return;
-    }
-
-    const rules = entries.map(([key, mockResponse], index) => {
+const buildRules = (data) => Object.entries(data)
+    .filter(([key]) => !KEYS.includes(key))
+    .map(([key, mockResponse], index) => {
         const { method, path } = parseStorageKey(key);
         const condition = {
             urlFilter: `*${path}*`,
@@ -54,30 +46,40 @@ const updateRules = (data, isEnabled) => {
         };
     });
 
-    chrome.declarativeNetRequest.updateDynamicRules({
-        removeRuleIds: rules.map(rule => rule.id),
-        addRules: rules
+// Replaces all installed dynamic rules (not just the ones matching current storage),
+// so removed or cleared mocks never stay active.
+const syncRules = async () => {
+    const items = await chrome.storage.local.get(null);
+    const installed = await chrome.declarativeNetRequest.getDynamicRules();
+    await chrome.declarativeNetRequest.updateDynamicRules({
+        removeRuleIds: installed.map(rule => rule.id),
+        addRules: items.isEnabled ? buildRules(items) : []
     });
-}
+};
 
-chrome.runtime.onInstalled.addListener(() => {
-    chrome.storage.local.get(null, (existing) => {
+// Storage changes can fire in bursts (e.g. import), so run syncs one at a time.
+let queue = Promise.resolve();
+const scheduleSync = () => {
+    queue = queue
+        .then(syncRules)
+        .catch(error => console.error('Failed to update mock rules:', error));
+    return queue;
+};
+
+chrome.runtime.onInstalled.addListener(async () => {
+    try {
+        const existing = await chrome.storage.local.get(null);
         const hasData = Object.keys(existing).some(k => !KEYS.includes(k));
         if (!hasData) {
-            chrome.storage.local.set({ ...mockData, isEnabled: false }, () => {
-                updateRules({ ...mockData, isEnabled: false }, false);
-            });
-        } else {
-            updateRules(existing, existing.isEnabled ?? false);
+            await chrome.storage.local.set({ ...mockData, isEnabled: false });
         }
-    });
+    } catch (error) {
+        console.error('Failed to initialize mock data:', error);
+    }
+    await scheduleSync();
 });
 
 chrome.storage.onChanged.addListener((changes, namespace) => {
     if (namespace !== 'local') return;
-
-    chrome.storage.local.get(null, (items) => {
-        console.log('Current local storage state:', items);
-        updateRules(items, items.isEnabled);
-    });
+    scheduleSync();
 });

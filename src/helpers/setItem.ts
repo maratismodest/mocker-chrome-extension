@@ -5,8 +5,15 @@ const getStorageKey = (method: HttpMethod, endpoint: string) => `${method}:${end
 
 export const setItem = (method: HttpMethod, endpoint: string, response: string) => {
     if (endpoint && response) {
+        let parsed: unknown;
+        try {
+            parsed = JSON.parse(response);
+        } catch {
+            alert('Response is not valid JSON.');
+            return;
+        }
         const key = getStorageKey(method, endpoint);
-        chrome.storage.local.set({[key]: JSON.parse(response)}, function () {
+        chrome.storage.local.set({[key]: parsed}, function () {
             if (chrome.runtime.lastError) {
                 console.error(chrome.runtime.lastError);
                 alert('Error setting item: ' + chrome.runtime.lastError.message);

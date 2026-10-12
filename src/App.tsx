@@ -22,7 +22,6 @@ function App() {
     const [response, setResponse] = useAtom(responseAtom);
     const [enabled, setEnabled] = useState(false);
 
-    const ref = useRef<HTMLDivElement | null>(null)
     const inputRef = useRef<HTMLInputElement | null>(null)
 
     useEffect(() => {
@@ -67,10 +66,9 @@ function App() {
         handleReset();
     }
 
-    const handleClearAll = () => {
-        if (confirm('Are you sure you want to clear all data?')) {
-            clearAll()
-        }
+    const handleExportClick = async () => {
+        const items = await chrome.storage.local.get(null);
+        handleExport(Object.fromEntries(Object.entries(items).filter(([key]) => key !== 'isEnabled')));
     }
 
     const buttons = [
@@ -145,7 +143,7 @@ function App() {
             </ul>
             <div className='flex gap-1 flex-wrap relative mt-2'>
                 <button
-                    onClick={() => ref.current && handleExport(JSON.parse(ref.current.innerHTML))}
+                    onClick={handleExportClick}
                     className={clsx("bg-blue-500 hover:bg-blue-700", "text-white rounded-sm px-4")}
                 >
                     Export
@@ -164,12 +162,12 @@ function App() {
                     onChange={handleFileUpload}
                     className="mb-4 p-2 border border-gray-300 rounded-sm"
                 />
-                <button onClick={handleClearAll} className='bg-red-500 hover:bg-red-700 ml-auto'>Clear All</button>
+                <button onClick={clearAll} className='bg-red-500 hover:bg-red-700 ml-auto'>Clear All</button>
             </div>
 
             <div className='mt-4'>
                 <h2>Endpoints:</h2>
-                <div id="endpoints" ref={ref}/>
+                <div id="endpoints"/>
                 <span id="error" className='text-red-700'></span>
             </div>
 
