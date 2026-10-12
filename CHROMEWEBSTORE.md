@@ -152,11 +152,11 @@ https://github.com/maratismodest/mocker-chrome-extension/blob/main/PRIVACY.md
 
 **Publisher Name** [REQUIRED]
 
-TODO
+Marat Faizerakhmanov
 
 **Contact Email** [REQUIRED]
 
-TODO <!-- Shown publicly on the store listing. -->
+maratismodest@gmail.com <!-- Shown publicly on the store listing. -->
 
 **Support URL / Email** [RECOMMENDED]
 
@@ -179,7 +179,7 @@ https://github.com/maratismodest/mocker-chrome-extension
 
 ### Pre-submission checklist
 
-- [ ] Fill in Publisher Name and Contact Email above
+- [x] Fill in Publisher Name and Contact Email above
 - [x] Create at least 1 screenshot (1280×800 or 640×400) — `store-assets/screenshot-1..3.png`
 - [ ] Push `PRIVACY.md` to `main` and check the Privacy Policy URL opens
 - [ ] Build with `npm run build` and zip the **contents** of `dist/` (manifest.json at the zip root);
