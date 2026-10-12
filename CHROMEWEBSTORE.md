@@ -141,6 +141,9 @@ https://github.com/maratismodest/mocker-chrome-extension/blob/main/PRIVACY.md
 
 ## Distribution
 
+**Store URL**: https://chromewebstore.google.com/detail/mock-data-extension/fdlfbgjbacfoflclbncmildgjhngcjmb
+**Extension ID**: fdlfbgjbacfoflclbncmildgjhngcjmb
+
 **Visibility**: Public
 **Regions**: All regions
 

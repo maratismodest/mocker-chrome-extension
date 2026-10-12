@@ -3,6 +3,8 @@
 A Chrome extension that returns your own JSON for chosen API endpoints. Build and test a
 frontend before the backend is ready, reproduce edge cases, or demo an app without a live server.
 
+**[Install from the Chrome Web Store](https://chromewebstore.google.com/detail/mock-data-extension/fdlfbgjbacfoflclbncmildgjhngcjmb)**
+
 ![Popup](store-assets/screenshot-1.png)
 
 ## Features
