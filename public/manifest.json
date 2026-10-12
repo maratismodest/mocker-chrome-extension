@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Mock Data Extension",
   "version": "1.0.6",
-  "description": "Returns mock data for specific routes",
+  "description": "Return your own JSON for chosen API endpoints and HTTP methods on any website. Test frontends without changing the backend.",
   "permissions": [
     "declarativeNetRequest",
     "storage"
