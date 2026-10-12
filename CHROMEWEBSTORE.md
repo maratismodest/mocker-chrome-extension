@@ -170,7 +170,7 @@ https://github.com/maratismodest/mocker-chrome-extension
 
 | Version | Date | Changes | Status |
 |---------|------|---------|--------|
-| Unreleased | — | Mock list in the popup: per-mock on/off, edit and delete (replaces Get Item / Remove Item). | — |
+| 1.0.8 | 2026-10-12 | Mock list in the popup: per-mock on/off, edit and delete (replaces Get Item / Remove Item). New screenshots. Permissions unchanged. | Draft |
 | 1.0.7 | 2026-10-12 | Update (permissions unchanged). Exact path matching with `*` wildcards; deleted, cleared or disabled mocks reliably stop applying; in-popup success/error messages; single-step import; fixed export of data containing `&`, `<`, `>`. | Draft |
 
 <!-- Status options: Draft | Submitted | In Review | Published | Rejected -->
