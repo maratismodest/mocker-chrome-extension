@@ -1,40 +1,56 @@
-import {useEffect, useRef, useState} from "react";
+import {ChangeEvent, useEffect, useRef, useState} from "react";
 import clsx from "clsx";
 import {useAtom} from 'jotai'
 import {
     clearAll,
+    getEndpoints,
     getItem,
     handleExport,
     handleFileUpload,
     removeItem,
     setItem,
-    setStorage,
-    updateStorageContents,
 } from "./helpers";
 import type {HttpMethod} from "./store";
 import {endpointAtom, methodAtom, responseAtom} from "./store";
 import {HTTP_METHODS} from "./constants";
 
+type Message = { type: 'success' | 'error', text: string };
 
 function App() {
     const [method, setMethod] = useAtom(methodAtom);
     const [endpoint, setEndpoint] = useAtom(endpointAtom);
     const [response, setResponse] = useAtom(responseAtom);
     const [enabled, setEnabled] = useState(false);
+    const [endpoints, setEndpoints] = useState<Record<string, unknown>>({});
+    const [message, setMessage] = useState<Message | null>(null);
 
     const inputRef = useRef<HTMLInputElement | null>(null)
 
+    // Storage is the single source of truth: re-read it on every change,
+    // so the list and the toggle stay in sync (e.g. after Clear All or import).
     useEffect(() => {
-        chrome.storage.local.get(null, function (data) {
-            setEnabled(typeof data.isEnabled === "boolean" ? data.isEnabled : false);
-            updateStorageContents()
-        });
+        const sync = async () => {
+            const {isEnabled} = await chrome.storage.local.get('isEnabled');
+            setEnabled(isEnabled === true);
+            setEndpoints(await getEndpoints());
+        };
+        sync().catch(() => setMessage({type: 'error', text: 'Error fetching storage contents'}));
+        chrome.storage.onChanged.addListener(sync);
+        return () => chrome.storage.onChanged.removeListener(sync);
     }, []);
 
-    const handleToggle = (checked: boolean) => {
-        setEnabled(checked)
-        setStorage('isEnabled', checked)
+    const run = async (action: () => Promise<string | void>) => {
+        try {
+            const text = await action();
+            setMessage(text ? {type: 'success', text} : null);
+        } catch (error) {
+            setMessage({type: 'error', text: error instanceof Error ? error.message : String(error)});
+        }
     }
+
+    const handleToggle = (checked: boolean) => run(async () => {
+        await chrome.storage.local.set({isEnabled: checked});
+    })
 
     const handleMethodChange = (value: HttpMethod) => {
         setMethod(value);
@@ -51,24 +67,36 @@ function App() {
     const handleReset = () => {
         handleEndpointChange('')
         handleResponseChange('')
+        setMessage(null)
     }
 
-    const handleGetItem = () => {
-        getItem(method, endpoint, setResponse);
-    };
+    const handleGetItem = () => run(async () => {
+        setResponse(await getItem(method, endpoint));
+    });
 
-    const handleSetItem = () => {
-        setItem(method, endpoint, response);
-    };
+    const handleSetItem = () => run(() => setItem(method, endpoint, response));
 
-    const handleRemoveItem = () => {
-        removeItem(method, endpoint);
-        handleReset();
+    const handleRemoveItem = () => run(async () => {
+        const text = await removeItem(method, endpoint);
+        handleEndpointChange('')
+        handleResponseChange('')
+        return text;
+    })
+
+    const handleExportClick = () => run(async () => {
+        handleExport(await getEndpoints());
+    })
+
+    const handleImport = (event: ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        event.target.value = '';
+        if (file) run(() => handleFileUpload(file));
     }
 
-    const handleExportClick = async () => {
-        const items = await chrome.storage.local.get(null);
-        handleExport(Object.fromEntries(Object.entries(items).filter(([key]) => key !== 'isEnabled')));
+    const handleClearAll = () => {
+        if (confirm('Are you sure you want to clear all items from storage?')) {
+            run(clearAll);
+        }
     }
 
     const buttons = [
@@ -159,16 +187,22 @@ function App() {
                     ref={inputRef}
                     type="file"
                     accept=".json"
-                    onChange={handleFileUpload}
+                    onChange={handleImport}
                     className="mb-4 p-2 border border-gray-300 rounded-sm"
                 />
-                <button onClick={clearAll} className='bg-red-500 hover:bg-red-700 ml-auto'>Clear All</button>
+                <button onClick={handleClearAll} className='bg-red-500 hover:bg-red-700 ml-auto'>Clear All</button>
             </div>
+
+            {message && (
+                <p role={message.type === 'error' ? 'alert' : 'status'}
+                   className={clsx('mt-2 text-sm', message.type === 'error' ? 'text-red-700' : 'text-green-700')}>
+                    {message.text}
+                </p>
+            )}
 
             <div className='mt-4'>
                 <h2>Endpoints:</h2>
-                <div id="endpoints"/>
-                <span id="error" className='text-red-700'></span>
+                <div id="endpoints">{JSON.stringify(endpoints, null, 2)}</div>
             </div>
 
         </>

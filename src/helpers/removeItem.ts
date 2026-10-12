@@ -1,21 +1,10 @@
-import {updateStorageContents} from "./updateStorageContents";
 import type {HttpMethod} from "../store";
+import {getStorageKey} from "./storageKey";
 
-const getStorageKey = (method: HttpMethod, endpoint: string) => `${method}:${endpoint}`;
-
-export const removeItem = (method: HttpMethod, endpoint: string) => {
-    const key = getStorageKey(method, endpoint);
-    if (endpoint) {
-        chrome.storage.local.remove(key, function () {
-            if (chrome.runtime.lastError) {
-                console.error(chrome.runtime.lastError);
-                alert('Error removing item: ' + chrome.runtime.lastError.message);
-            } else {
-                updateStorageContents();
-                alert('Item removed successfully!');
-            }
-        });
-    } else {
-        alert('Please enter a key to remove.');
+export const removeItem = async (method: HttpMethod, endpoint: string) => {
+    if (!endpoint) {
+        throw new Error('Please enter an endpoint to remove.');
     }
+    await chrome.storage.local.remove(getStorageKey(method, endpoint));
+    return 'Item removed successfully!';
 }
