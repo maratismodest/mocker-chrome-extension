@@ -1,6 +1,6 @@
 export * from './setItem'
-export * from './getItem'
 export * from './removeItem'
+export * from './toggleMock'
 export * from './clearAll'
 export * from './storageKey'
 export * from './handleExport'

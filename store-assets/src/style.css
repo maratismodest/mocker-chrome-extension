@@ -14,7 +14,7 @@ ul.points { list-style: none; padding: 0; margin-top: 28px; font-size: 20px; col
 ul.points li { padding: 8px 0 8px 34px; position: relative; }
 ul.points li::before { content: "✓"; position: absolute; left: 0; color: #4ade80; font-weight: 700; }
 .popup {
-    width: 480px; height: 680px; border: 0; border-radius: 14px; background: #fff;
+    width: 480px; height: 600px; border: 0; border-radius: 14px; background: #fff;
     box-shadow: 0 30px 80px rgba(0,0,0,.45);
 }
 code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }

@@ -1,10 +1,11 @@
-import type {HttpMethod} from "../store";
-import {getStorageKey} from "./storageKey";
+import {DISABLED_KEY} from "./storageKey";
+import {getDisabledMocks} from "./toggleMock";
 
-export const removeItem = async (method: HttpMethod, endpoint: string) => {
-    if (!endpoint) {
-        throw new Error('Please enter an endpoint to remove.');
+export const removeItem = async (key: string) => {
+    const disabled = await getDisabledMocks();
+    await chrome.storage.local.remove(key);
+    if (disabled.includes(key)) {
+        await chrome.storage.local.set({[DISABLED_KEY]: disabled.filter(k => k !== key)});
     }
-    await chrome.storage.local.remove(getStorageKey(method, endpoint));
-    return 'Item removed successfully!';
+    return 'Mock removed.';
 }

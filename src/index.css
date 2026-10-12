@@ -50,7 +50,11 @@
 
 @layer components {
     #endpoints {
-        @apply whitespace-pre-wrap max-h-52 overflow-y-auto border border-gray-300 p-2 rounded-sm
+        @apply max-h-52 overflow-y-auto border border-gray-300 p-1 rounded-sm
+    }
+
+    .mock-action {
+        @apply px-2 py-0.5 text-xs bg-gray-100 text-gray-700 hover:bg-gray-200
     }
 
     .form-input-group {

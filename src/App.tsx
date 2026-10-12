@@ -3,16 +3,20 @@ import clsx from "clsx";
 import {useAtom} from 'jotai'
 import {
     clearAll,
+    getDisabledMocks,
     getEndpoints,
-    getItem,
+    getStorageKey,
     handleExport,
     handleFileUpload,
+    parseStorageKey,
     removeItem,
     setItem,
+    setMockEnabled,
 } from "./helpers";
 import type {HttpMethod} from "./store";
-import {endpointAtom, methodAtom, responseAtom} from "./store";
+import {editingKeyAtom, endpointAtom, methodAtom, responseAtom} from "./store";
 import {HTTP_METHODS} from "./constants";
+import {MockList} from "./components/MockList";
 
 type Message = { type: 'success' | 'error', text: string };
 
@@ -21,7 +25,9 @@ function App() {
     const [endpoint, setEndpoint] = useAtom(endpointAtom);
     const [response, setResponse] = useAtom(responseAtom);
     const [enabled, setEnabled] = useState(false);
+    const [editingKey, setEditingKey] = useAtom(editingKeyAtom);
     const [endpoints, setEndpoints] = useState<Record<string, unknown>>({});
+    const [disabled, setDisabled] = useState<string[]>([]);
     const [message, setMessage] = useState<Message | null>(null);
 
     const inputRef = useRef<HTMLInputElement | null>(null)
@@ -33,6 +39,7 @@ function App() {
             const {isEnabled} = await chrome.storage.local.get('isEnabled');
             setEnabled(isEnabled === true);
             setEndpoints(await getEndpoints());
+            setDisabled(await getDisabledMocks());
         };
         sync().catch(() => setMessage({type: 'error', text: 'Error fetching storage contents'}));
         chrome.storage.onChanged.addListener(sync);
@@ -67,21 +74,37 @@ function App() {
     const handleReset = () => {
         handleEndpointChange('')
         handleResponseChange('')
+        setEditingKey(null)
         setMessage(null)
     }
 
-    const handleGetItem = () => run(async () => {
-        setResponse(await getItem(method, endpoint));
+    const handleSetItem = () => run(async () => {
+        const text = await setItem(method, endpoint, response);
+        const newKey = getStorageKey(method, endpoint);
+        // Saving an edited mock under a new method or path moves it instead of copying
+        if (editingKey && editingKey !== newKey) {
+            await removeItem(editingKey);
+        }
+        setEditingKey(null);
+        return text;
     });
 
-    const handleSetItem = () => run(() => setItem(method, endpoint, response));
+    const handleEdit = (key: string) => {
+        const parsed = parseStorageKey(key);
+        setMethod(parsed?.method ?? 'GET');
+        setEndpoint(parsed?.endpoint ?? key);
+        setResponse(JSON.stringify(endpoints[key], null, 2));
+        setEditingKey(key);
+        setMessage(null);
+    }
 
-    const handleRemoveItem = () => run(async () => {
-        const text = await removeItem(method, endpoint);
-        handleEndpointChange('')
-        handleResponseChange('')
+    const handleDelete = (key: string) => run(async () => {
+        const text = await removeItem(key);
+        if (key === editingKey) setEditingKey(null);
         return text;
     })
+
+    const handleToggleMock = (key: string, isOn: boolean) => run(() => setMockEnabled(key, isOn));
 
     const handleExportClick = () => run(async () => {
         handleExport(await getEndpoints());
@@ -100,10 +123,8 @@ function App() {
     }
 
     const buttons = [
-        {label: 'Set Item', onClick: handleSetItem},
-        {label: 'Get Item', onClick: handleGetItem},
-        {label: 'Remove Item', onClick: handleRemoveItem},
-        {label: 'Reset Form', onClick: handleReset},
+        {label: editingKey ? 'Save Changes' : 'Set Item', onClick: handleSetItem},
+        {label: editingKey ? 'Cancel' : 'Reset Form', onClick: handleReset},
     ]
 
 
@@ -155,7 +176,12 @@ function App() {
                     />
                 </li>
             </ul>
-            <ul className='flex gap-1 relative mt-2 justify-between'>
+            {editingKey && (
+                <p className='mt-2 text-sm text-gray-600'>
+                    Editing <code className='font-mono'>{editingKey.replace(':', ' ')}</code>
+                </p>
+            )}
+            <ul className='flex gap-1 relative mt-2'>
                 {buttons.map((button) => (
                     <li key={button.label}>
                         <button
@@ -200,10 +226,15 @@ function App() {
                 </p>
             )}
 
-            <div className='mt-4'>
-                <h2>Endpoints:</h2>
-                <div id="endpoints">{JSON.stringify(endpoints, null, 2)}</div>
-            </div>
+            <MockList
+                mocks={endpoints}
+                disabled={disabled}
+                mockingEnabled={enabled}
+                editingKey={editingKey}
+                onToggle={handleToggleMock}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+            />
 
         </>
     )

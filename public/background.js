@@ -1,4 +1,4 @@
-const KEYS = ['isEnabled'];
+const KEYS = ['isEnabled', 'disabledMocks'];
 
 const parseStorageKey = (key) => {
     const methods = ['GET', 'POST', 'PUT', 'DELETE'];
@@ -33,7 +33,7 @@ const buildRegexFilter = (path) => {
 };
 
 const buildRules = (data) => Object.entries(data)
-    .filter(([key]) => !KEYS.includes(key))
+    .filter(([key]) => !KEYS.includes(key) && !(data.disabledMocks ?? []).includes(key))
     .map(([key, mockResponse], index) => {
         const { method, path } = parseStorageKey(key);
         const condition = {

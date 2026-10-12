@@ -1,7 +1,8 @@
 import type {HttpMethod} from "../store";
 import {HTTP_METHODS} from "../constants";
 
-export const SERVICE_KEYS = ['isEnabled'];
+export const DISABLED_KEY = 'disabledMocks';
+export const SERVICE_KEYS = ['isEnabled', DISABLED_KEY];
 
 export const getStorageKey = (method: HttpMethod, endpoint: string) => `${method}:${endpoint}`;
 

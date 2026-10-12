@@ -30,7 +30,8 @@ Features:
 • Exact path matching: /api/users is mocked, /api/users/1 is not
 • Use * to mock a whole group of paths, e.g. /api/users/*
 • Query strings are ignored, so /api/users?page=2 gets the same mock
-• Turn all mocks on or off with one switch, without losing them
+• See all your mocks in a list: edit, delete or turn off any of them without losing it
+• Turn all mocks on or off with one switch
 • Export your mocks to a JSON file and import them on another computer or share with your team
 • Ready-made sample mocks so you can try it right away
 
@@ -169,6 +170,7 @@ https://github.com/maratismodest/mocker-chrome-extension
 
 | Version | Date | Changes | Status |
 |---------|------|---------|--------|
+| Unreleased | — | Mock list in the popup: per-mock on/off, edit and delete (replaces Get Item / Remove Item). | — |
 | 1.0.7 | 2026-10-12 | Update (permissions unchanged). Exact path matching with `*` wildcards; deleted, cleared or disabled mocks reliably stop applying; in-popup success/error messages; single-step import; fixed export of data containing `&`, `<`, `>`. | Draft |
 
 <!-- Status options: Draft | Submitted | In Review | Published | Rejected -->

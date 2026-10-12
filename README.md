@@ -12,7 +12,7 @@ frontend before the backend is ready, reproduce edge cases, or demo an app witho
 - Mock any endpoint by HTTP method (`GET`, `POST`, `PUT`, `DELETE`) and URL path
 - Works on any site, including `localhost`
 - Exact path matching, with `*` wildcards for groups of paths
-- One switch turns all mocks on or off without deleting them
+- One switch turns all mocks on or off; each mock can also be turned off individually
 - Export / import mocks as a JSON file
 - Everything is stored locally in the browser — see [PRIVACY.md](PRIVACY.md)
 
@@ -24,7 +24,13 @@ frontend before the backend is ready, reproduce edge cases, or demo an app witho
 4. Turn on **Enable API Mocking**.
 5. Reload the page — matching `fetch` / `XMLHttpRequest` requests now return your JSON with status 200.
 
-**Get Item** loads a saved mock into the form, **Remove Item** deletes it, **Clear All** deletes everything.
+Saved mocks are listed below the form. In the list you can:
+
+- turn a single mock on or off with its checkbox, without deleting it;
+- **Edit** a mock — it is loaded into the form; **Save Changes** updates it (changing the method or path moves it), **Cancel** leaves it as is;
+- **Delete** a mock.
+
+**Clear All** deletes everything. The **Enable API Mocking** switch turns all mocks on or off at once.
 
 ### How paths are matched
 

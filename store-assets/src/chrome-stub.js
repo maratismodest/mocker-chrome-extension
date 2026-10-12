@@ -25,14 +25,17 @@
                 isEnabled: true,
                 'GET:/api/users': users,
                 'GET:/api/users/*': {id: 42, name: 'Any user', role: 'viewer'},
-                'POST:/api/orders': {id: 1042, status: 'created'}
+                'POST:/api/orders': {id: 1042, status: 'created'},
+                disabledMocks: ['POST:/api/orders']
             },
+            editingKey: 'GET:/api/users/*',
             form: {method: 'GET', endpoint: '/api/users/*', response: '{\n  "id": 42,\n  "name": "Any user",\n  "role": "viewer"\n}'}
         }
     };
     const scene = scenes[new URLSearchParams(location.search).get('scene')] || scenes[1];
     const data = structuredClone(scene.data);
 
+    localStorage.setItem('editingKey', JSON.stringify(scene.editingKey ?? null));
     for (const [key, value] of Object.entries(scene.form)) {
         localStorage.setItem(key, JSON.stringify(value));
     }
