@@ -1,0 +1,26 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="style.css">
+<style>
+h1 { font-size: 46px; }
+.match { margin-top: 28px; background: rgba(15,23,42,.55); border-radius: 12px; padding: 18px 22px; font-size: 18px; }
+.row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid rgba(148,163,184,.2); }
+.row:last-child { border-bottom: 0; }
+.yes { color: #4ade80; font-weight: 600; } .no { color: #94a3b8; }
+.rule { color: #93c5fd; font-size: 15px; margin: 12px 0 4px; text-transform: uppercase; letter-spacing: .06em; }
+.rule:first-child { margin-top: 0; }
+.rule code { text-transform: none; letter-spacing: 0; }
+</style></head><body>
+<div class="copy">
+    <div class="eyebrow">Precise matching</div>
+    <h1>Mock exactly the paths you need</h1>
+    <div class="match">
+        <div class="rule">Rule <code>/api/users</code></div>
+        <div class="row"><code>/api/users</code><span class="yes">mocked</span></div>
+        <div class="row"><code>/api/users?page=2</code><span class="yes">mocked</span></div>
+        <div class="row"><code>/api/users/1</code><span class="no">real response</span></div>
+        <div class="rule">Rule <code>/api/users/*</code></div>
+        <div class="row"><code>/api/users/42</code><span class="yes">mocked</span></div>
+    </div>
+    <p class="lead" style="margin-top:24px">Export your mocks to a file and import them on another machine or share them with your team.</p>
+</div>
+<iframe class="popup" src="popup.html?scene=3"></iframe>
+</body></html>

@@ -67,9 +67,9 @@ English
 | Asset | Dimensions | Status | Filename |
 |-------|-----------|--------|----------|
 | Store Icon [REQUIRED] | 128×128 PNG | ✅ Ready | `public/icons/icon-128.png` |
-| Screenshot 1 [REQUIRED] | 1280×800 or 640×400 | ⬜ Not created | |
-| Screenshot 2 [RECOMMENDED] | 1280×800 or 640×400 | ⬜ Not created | |
-| Screenshot 3 [RECOMMENDED] | 1280×800 or 640×400 | ⬜ Not created | |
+| Screenshot 1 [REQUIRED] | 1280×800 or 640×400 | ✅ Ready | `store-assets/screenshot-1.png` |
+| Screenshot 2 [RECOMMENDED] | 1280×800 or 640×400 | ✅ Ready | `store-assets/screenshot-2.png` |
+| Screenshot 3 [RECOMMENDED] | 1280×800 or 640×400 | ✅ Ready | `store-assets/screenshot-3.png` |
 | Screenshot 4 | 1280×800 or 640×400 | ⬜ Not created | |
 | Screenshot 5 | 1280×800 or 640×400 | ⬜ Not created | |
 | Small Promo Tile [RECOMMENDED] | 440×280 | ⬜ Not created | |
@@ -78,6 +78,10 @@ English
 <!-- Status options: ⬜ Not created | 🟡 Needs update | ✅ Ready -->
 
 ### Screenshot Notes
+
+Screenshots 1–3 are rendered from the real popup build by `store-assets/generate.sh`
+(sources in `store-assets/src/`). Re-run it after UI changes. The demo page in screenshot 2
+is an illustration of a mocked response.
 
 1. **Popup with a mock being created** — method GET, endpoint `/api/users`, a JSON response in the
    textarea, mocking switched on, the endpoint list below. Caption: "Define a mock in seconds".
@@ -171,7 +175,7 @@ https://github.com/maratismodest/mocker-chrome-extension
 ### Pre-submission checklist
 
 - [ ] Fill in Publisher Name and Contact Email above
-- [ ] Create at least 1 screenshot (1280×800 or 640×400)
+- [x] Create at least 1 screenshot (1280×800 or 640×400) — `store-assets/screenshot-1..3.png`
 - [ ] Push `PRIVACY.md` to `main` and check the Privacy Policy URL opens
 - [ ] Build with `npm run build` and zip the **contents** of `dist/` (manifest.json at the zip root);
       the zip must not contain `.git/`, `node_modules/`, `.env` or this file
