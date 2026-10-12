@@ -166,7 +166,7 @@ https://github.com/maratismodest/mocker-chrome-extension
 
 | Version | Date | Changes | Status |
 |---------|------|---------|--------|
-| 1.0.6 | 2026-10-12 | First store submission. Exact path matching with `*` wildcards; deleted, cleared or disabled mocks reliably stop applying; in-popup success/error messages; single-step import; fixed export of data containing `&`, `<`, `>`. | Draft |
+| 1.0.7 | 2026-10-12 | First store submission. Exact path matching with `*` wildcards; deleted, cleared or disabled mocks reliably stop applying; in-popup success/error messages; single-step import; fixed export of data containing `&`, `<`, `>`. | Draft |
 
 <!-- Status options: Draft | Submitted | In Review | Published | Rejected -->
 
